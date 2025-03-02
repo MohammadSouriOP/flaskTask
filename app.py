@@ -1,12 +1,19 @@
 from flask import Flask
 
-from Presentaion.student import StudentAPI, StudentListAPI
-
-app = Flask(__name__)
+from Presentaion.student import StudentListAPI
 
 
-app.add_url_rule('/students', view_func=StudentListAPI.as_view('students'))
-app.add_url_rule('/students/<int:student_id>', view_func=StudentAPI.as_view('student'))
+def myApp() -> Flask:
+    app = Flask(__name__)
+    student_view = StudentListAPI().instance()
+
+    app.add_url_rule('/students/', view_func=student_view, methods=['POST', 'GET'])
+    app.add_url_rule(
+        '/students/<int:student_id>', view_func=student_view, methods=['GET', 'PUT', 'DELETE'], )
+
+    return app
+
 
 if __name__ == '__main__':
+    app = myApp()
     app.run(debug=True)

@@ -1,46 +1,45 @@
-from typing import Dict, List, Optional
+from typing import Any, Dict, Generic, List, Type, TypeVar
 
 from Domain.base_entity import BaseEntity
 
+E = TypeVar('E', bound='BaseEntity')
 
-class BaseRepo:
-    def __init__(self) -> None:
-        self.students: Dict[int, BaseEntity] = {}
-        self.next_id: int = 1
+student: Dict[str, dict[int, E]] = {}
 
-    def create(self, name: str, age: int, grade: str) -> BaseEntity:
 
-        student = BaseEntity(self.next_id, name, age, grade)
-        self.students[self.next_id] = student
-        self.next_id += 1
-        return student
+class BaseRepo(Generic[E]):
 
-    def get_all(self) -> List[BaseEntity]:
+    def __init__(self, entity_name: str, entity: Type[E]) -> None:
+        self.entity = entity
+        self.entity_name = entity_name
 
-        return list(self.students.values())
+    def create(self, entity: E) -> E:
+        if self.entity_name not in student:
+            student[self.entity_name] = {}
+        student[self.entity_name][entity.id] = entity
+        return entity
 
-    def get_by_id(self, student_id: int) -> Optional[BaseEntity]:
+    def get_all(self) -> List[E]:
 
-        return self.students.get(student_id)
+        return list(student[self.entity_name].values())
 
-    def update(self, student_id: int,
-               name: Optional[str], age: Optional[int], grade: Optional[str]) -> Optional[BaseEntity]:
+    def get_by_id(self, student_id: int) -> E | None:
+        if self.entity_name not in student:
+            return None
+        if student_id not in student[self.entity_name]:
+            return None
+        return student[self.entity_name].get(student_id)
 
-        student = self.get_by_id(student_id)
-        if student:
-            if name:
-                student.name = name
-            if age:
-                student.age = age
-            if grade:
-                student.grade = grade
-            return student
+    def update(self, student_id: int, data: dict[str, Any]) -> E | None:
+        entity = student[self.entity_name].get(student_id)
+        if entity:
+            entity.update(data)
+            return entity
         return None
 
-    def delete(self, student_id: int) -> bool:
+    def delete(self, student_id: int) -> E | None:
 
-        student = self.get_by_id(student_id)
-        if student:
-            del self.students[student_id]
-            return True
-        return False
+        if student_id in student[self.entity_name]:
+            return student[self.entity_name].pop(student_id)
+        else:
+            return None

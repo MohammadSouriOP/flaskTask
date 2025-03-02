@@ -1,17 +1,15 @@
-from typing import Dict
+from dataclasses import dataclass
+from datetime import datetime
+from typing import Any
 
 
+@dataclass
 class BaseEntity:
-    def __init__(self, id: int, name: str, age: int, grade: str) -> None:
-        self.id = id
-        self.name = name
-        self.age = age
-        self.grade = grade
+    id: int
+    created_at: datetime
 
-    def to_dict(self) -> Dict[str, int | str]:
-        return {
-            'id': self.id,
-            'name': self.name,
-            'age': self.age,
-            'grade': self.grade
-        }
+    def update(self, data: dict[str, Any]) -> 'BaseEntity':
+        for key, value in data.items():
+            if hasattr(self, key):
+                setattr(self, key, value)
+        return self
