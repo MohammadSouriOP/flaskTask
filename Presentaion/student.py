@@ -3,7 +3,7 @@ from typing import Any
 from flask import jsonify, request
 from flask.views import MethodView
 
-from base_repo import BaseRepo
+from Infra.base_repo import BaseRepo
 
 repo = BaseRepo()
 

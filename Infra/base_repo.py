@@ -1,6 +1,6 @@
 from typing import Dict, List, Optional
 
-from base_entity import BaseEntity
+from Domain.base_entity import BaseEntity
 
 
 class BaseRepo:
