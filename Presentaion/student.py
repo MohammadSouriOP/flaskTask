@@ -30,14 +30,14 @@ class StudentListAPI(MethodView):
 
         data = request.get_json()
         student = Student(
-            student_id=data['student_id'],
+            id=data['student_id'],
             name=data['name'],
             age=data['age'],
             grade=data['grade'],
             created_at=datetime.now(),
         )
         studentRepo = StudentRepo()
-        studentRepo.insert(student)
+        studentRepo.create(student)
         return jsonify(student), 201
 
     def put(self, student_id: int) -> Union[Any, None, Student, Tuple[Dict[str, str], int], Dict[str, Any]]:
