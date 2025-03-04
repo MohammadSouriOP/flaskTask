@@ -19,9 +19,9 @@ class StudentListAPI(MethodView):
         studentRepo = StudentRepo()
         if student_id is None:
             students = studentRepo.get_all()
-            return jsonify([student.to_dict() for student in students])
+            return jsonify([student.__dict__ for student in students])
         else:
-            student = studentRepo.get(student_id)
+            student = studentRepo.get_by_id(student_id)
             if student:
                 return jsonify(student.__dict__)
         return jsonify('Student Not Found')
@@ -44,7 +44,7 @@ class StudentListAPI(MethodView):
         try:
             req = request.json
             studentRepo = StudentRepo()
-            student = studentRepo.get(student_id)
+            student = studentRepo.get_by_id(student_id)
 
             if not isinstance(student, Student):
                 return {'response': 'Student not found'}, 404

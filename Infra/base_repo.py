@@ -23,15 +23,15 @@ class BaseRepo(Generic[E]):
 
         return list(student[self.entity_name].values())
 
-    def get_by_id(self, student_id: int) -> E | None:
+    def get_by_id(self, id: int) -> E | None:
         if self.entity_name not in student:
             return None
-        if student_id not in student[self.entity_name]:
+        if id not in student[self.entity_name]:
             return None
-        return student[self.entity_name].get(student_id)
+        return student[self.entity_name].get(id)
 
-    def update(self, student_id: int, data: dict[str, Any]) -> E | None:
-        entity = student[self.entity_name].get(student_id)
+    def update(self, id: int, data: dict[str, Any]) -> E | None:
+        entity = student[self.entity_name].get(id)
         if entity:
             entity.update(data)
             return entity
