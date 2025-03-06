@@ -1,5 +1,5 @@
 from Domain.student_entity import Student
-from Infra.base_repo import BaseRepo
+from Infra.repo.base_repo import BaseRepo
 
 
 class StudentRepo(BaseRepo[Student]):
