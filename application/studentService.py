@@ -1,28 +1,29 @@
 from datetime import datetime
+from typing import Any, Dict, List, Optional
 
 from application.baseService import BaseService
 from Domain.student_entity import Student
 from Infra.repo.student_repo import StudentRepo
+from Infra.unitOfWork.unitOfWork import UnitOfWork
 
 
 class StudentService(BaseService):
-    def __init__(self, uow):
-        self.uow = uow
-        self.student_repo = StudentRepo()
+    def __init__(self, uow: UnitOfWork) -> None:
         super().__init__(uow)
+        self.student_repo = StudentRepo()
 
-    def get_students(self):
+    def get_students(self) -> List[Student]:
         return self.student_repo.get_all()
 
-    def get_student_by_id(self, student_id: int):
+    def get_student_by_id(self, student_id: int) -> Optional[Student]:
         return self.student_repo.get_by_id(student_id)
 
-    def create_student(self, data):
+    def create_student(self, data: Dict[str, Any]) -> Student:
         student = Student(
-            id=data['id'],
-            name=data['name'],
-            age=data['age'],
-            grade=data['grade'],
+            id=data["id"],
+            name=data["name"],
+            age=data["age"],
+            grade=data["grade"],
             created_at=datetime.now(),
         )
         with self.uow:
@@ -30,14 +31,14 @@ class StudentService(BaseService):
             self.uow.commit()
         return student
 
-    def update_student(self, id, req):
+    def update_student(self, id: int, req: Dict[str, Any]) -> Optional[Student]:
         with self.uow:
-            student = self.student_repo.update(id, req)
+            student_data = self.student_repo.update(id, req)
             self.uow.commit()
-        return student
+        return Student(**student_data) if student_data else None
 
-    def delete_student(self, id):
+    def delete_student(self, id: int) -> Optional[Student]:
         with self.uow:
-            result = self.student_repo.delete(id)
+            student_data = self.student_repo.delete(id)
             self.uow.commit()
-        return result
+        return Student(**student_data) if student_data else None
