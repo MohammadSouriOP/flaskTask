@@ -1,16 +1,15 @@
 from dataclasses import dataclass
+from datetime import datetime
 from typing import Any
-
-from Domain.base_entity import BaseEntity
+from typing import Optional
 
 
 @dataclass
-class Student(BaseEntity):
-    name: str
-    age: int
-    grade: int
+class BaseEntity:
+    id: Optional[int]
+    # created_at: datetime
 
-    def update(self, data: Any) -> 'Student':
+    def update(self, data: dict[str, Any]) -> 'BaseEntity':
         for key, value in data.items():
             if hasattr(self, key):
                 setattr(self, key, value)

@@ -1,19 +1,10 @@
 from flask import Flask
+from src.presentaion.routes import register_routes
+from src.presentaion.error_handler import register_error_handlers
 
-from Presentaion.student import StudentListAPI
+app = Flask(__name__)
 
+register_routes(app)
+register_error_handlers(app)
 
-def myApp() -> Flask:
-    app = Flask(__name__)
-    student_view = StudentListAPI().instance()
-
-    app.add_url_rule('/students/', view_func=student_view, methods=['POST', 'GET'])
-    app.add_url_rule(
-        '/students/<int:student_id>', view_func=student_view, methods=['GET', 'PUT', 'DELETE'], )
-
-    return app
-
-
-if __name__ == '__main__':
-    app = myApp()
-    app.run(debug=True)
+app.run(debug=True)
